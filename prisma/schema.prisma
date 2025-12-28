@@ -1,0 +1,29 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "./generated/prisma/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+        
+model User {
+  id Int @id @default(autoincrement())
+  name String @unique
+  age Int
+  occupation String
+  phone String
+  city String
+  Hobbies String
+  userId  String
+  password String
+  todos Todo[]
+}
+
+model Todo {
+  id Int @id @default(autoincrement())
+  task String
+  userId Int
+  user User @relation(fields:[userId], references: [id])
+}
