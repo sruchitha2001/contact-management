@@ -22,7 +22,7 @@ export default async function UsersPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">User Directory</h1>
+        <h1 className="text-3xl font-bold">User Directory {users.length}</h1>
         <Link
           href="/register"
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"

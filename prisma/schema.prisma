@@ -24,6 +24,6 @@ model User {
 model Todo {
   id Int @id @default(autoincrement())
   task String
-  userId Int
+  userId Int //foreign key
   user User @relation(fields:[userId], references: [id])
 }
