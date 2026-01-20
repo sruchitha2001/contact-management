@@ -13,7 +13,6 @@ export async function POST(request: Request) {
         phone: body.phone,
         city: body.city,
         Hobbies: body.hobbies,
-        userId: body.userId,
         password: body.password, // Suggestion: Hash this!
       },
     });
@@ -22,20 +21,25 @@ export async function POST(request: Request) {
   } catch (error: any) {
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
 
 export async function GET() {
   try {
+    console.log("API /register called");
+
     const users = await prisma.user.findMany({});
+    console.log("Users fetched:", users.length);
 
     return NextResponse.json({ success: true, users });
   } catch (error: any) {
+    console.error("REGISTER API ERROR 👉", error);
+
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

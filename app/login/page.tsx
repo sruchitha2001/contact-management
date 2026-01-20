@@ -28,15 +28,15 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulate an API call (Replace this with your actual authentication logic)
-      console.log("Logging in with:", formData);
+      // ✅ TEMP: fake successful login
+      const fakeUserId = 1;
+      console.log(formData);
 
-      // Artificial delay to show loading state
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // ✅ STORE userId
+      localStorage.setItem("userId", fakeUserId.toString());
 
-      // Redirect user after successful login
-      // router.push('/dashboard');
-      alert("Login logic triggered! Check console for data.");
+      // ✅ GO TO TRACKER
+      //  router.push("/tracker");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {

@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  output          = "./generated/prisma/client"
+  output          = "../generated/prisma/client"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -9,21 +9,17 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
   age        Int
   occupation String
   phone      String
   city       String
   Hobbies    String
   password   String
-
   todos      Todo[]
   activities Activity[]
-  activityLogs  ActivityLogs[]
-
 }
-
 
 model Todo {
   id     Int    @id @default(autoincrement())
@@ -36,23 +32,9 @@ model Activity {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
-  dates     DateTime[] 
+  date        DateTime
   createdAt   DateTime @default(now())
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
-  activityLogs  ActivityLogs[]
-
 }
-
-
-model ActivityLogs {
-  id          Int      @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-  activityId    Int
-  activity  Activity @relation(fields: [activityId], references: [id])
-  createdAt   DateTime @default(now())
-
-}
-

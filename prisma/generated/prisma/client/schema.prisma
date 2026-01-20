@@ -16,14 +16,37 @@ model User {
   phone      String
   city       String
   Hobbies    String
-  userId     String
   password   String
-  todos      Todo[]
+
+  todos        Todo[]
+  activities   Activity[]
+  activityLogs ActivityLogs[]
 }
 
 model Todo {
   id     Int    @id @default(autoincrement())
   task   String
-  userId Int
+  userId Int //foreign key 
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Activity {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  dates       DateTime[]
+  createdAt   DateTime   @default(now())
+
+  userId       Int
+  user         User           @relation(fields: [userId], references: [id])
+  activityLogs ActivityLogs[]
+}
+
+model ActivityLogs {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  activityId Int
+  activity   Activity @relation(fields: [activityId], references: [id])
+  createdAt  DateTime @default(now())
 }

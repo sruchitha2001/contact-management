@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma/client";
+import { PrismaClient } from "./prisma/generated/prisma/client";
 
 const prismaClientSingleton = () => {
   // 1. Create the pg pool
@@ -25,9 +25,8 @@ const globalForPrisma = globalThis as unknown as CustomGlobal;
 // Export the singleton instance
 const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
-export default prisma;
-
 // Save to global object in development
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
+export default prisma;

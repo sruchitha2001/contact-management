@@ -141,16 +141,9 @@ exports.Prisma.ActivityScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  dates: 'dates',
+  date: 'date',
   createdAt: 'createdAt',
   userId: 'userId'
-};
-
-exports.Prisma.ActivityLogsScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  activityId: 'activityId',
-  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -172,8 +165,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   Todo: 'Todo',
-  Activity: 'Activity',
-  ActivityLogs: 'ActivityLogs'
+  Activity: 'Activity'
 };
 
 /**

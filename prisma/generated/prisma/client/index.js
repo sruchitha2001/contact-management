@@ -101,7 +101,6 @@ exports.Prisma.UserScalarFieldEnum = {
   phone: 'phone',
   city: 'city',
   Hobbies: 'Hobbies',
-  userId: 'userId',
   password: 'password'
 };
 
@@ -109,6 +108,22 @@ exports.Prisma.TodoScalarFieldEnum = {
   id: 'id',
   task: 'task',
   userId: 'userId'
+};
+
+exports.Prisma.ActivityScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  dates: 'dates',
+  createdAt: 'createdAt',
+  userId: 'userId'
+};
+
+exports.Prisma.ActivityLogsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  activityId: 'activityId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -121,10 +136,17 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Todo: 'Todo'
+  Todo: 'Todo',
+  Activity: 'Activity',
+  ActivityLogs: 'ActivityLogs'
 };
 /**
  * Create the Client
@@ -136,10 +158,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated/prisma/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id         Int    @id @default(autoincrement())\n  name       String @unique\n  age        Int\n  occupation String\n  phone      String\n  city       String\n  Hobbies    String\n  userId     String\n  password   String\n  todos      Todo[]\n}\n\nmodel Todo {\n  id     Int    @id @default(autoincrement())\n  task   String\n  userId Int\n  user   User   @relation(fields: [userId], references: [id])\n}\n"
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated/prisma/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id         Int    @id @default(autoincrement())\n  name       String @unique\n  age        Int\n  occupation String\n  phone      String\n  city       String\n  Hobbies    String\n  password   String\n\n  todos        Todo[]\n  activities   Activity[]\n  activityLogs ActivityLogs[]\n}\n\nmodel Todo {\n  id     Int    @id @default(autoincrement())\n  task   String\n  userId Int //foreign key \n  user   User   @relation(fields: [userId], references: [id])\n}\n\nmodel Activity {\n  id          Int        @id @default(autoincrement())\n  title       String\n  description String?\n  dates       DateTime[]\n  createdAt   DateTime   @default(now())\n\n  userId       Int\n  user         User           @relation(fields: [userId], references: [id])\n  activityLogs ActivityLogs[]\n}\n\nmodel ActivityLogs {\n  id         Int      @id @default(autoincrement())\n  userId     Int\n  user       User     @relation(fields: [userId], references: [id])\n  activityId Int\n  activity   Activity @relation(fields: [activityId], references: [id])\n  createdAt  DateTime @default(now())\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"age\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"occupation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Hobbies\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"todos\",\"kind\":\"object\",\"type\":\"Todo\",\"relationName\":\"TodoToUser\"}],\"dbName\":null},\"Todo\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"TodoToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"age\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"occupation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Hobbies\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"todos\",\"kind\":\"object\",\"type\":\"Todo\",\"relationName\":\"TodoToUser\"},{\"name\":\"activities\",\"kind\":\"object\",\"type\":\"Activity\",\"relationName\":\"ActivityToUser\"},{\"name\":\"activityLogs\",\"kind\":\"object\",\"type\":\"ActivityLogs\",\"relationName\":\"ActivityLogsToUser\"}],\"dbName\":null},\"Todo\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"task\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"TodoToUser\"}],\"dbName\":null},\"Activity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dates\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ActivityToUser\"},{\"name\":\"activityLogs\",\"kind\":\"object\",\"type\":\"ActivityLogs\",\"relationName\":\"ActivityToActivityLogs\"}],\"dbName\":null},\"ActivityLogs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ActivityLogsToUser\"},{\"name\":\"activityId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"activity\",\"kind\":\"object\",\"type\":\"Activity\",\"relationName\":\"ActivityToActivityLogs\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),

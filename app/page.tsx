@@ -9,9 +9,9 @@ async function getUsers() {
     }/api/register`,
     {
       cache: "no-store", // Ensure we get fresh data
-    }
+    },
   );
-
+  console.log(res);
   if (!res.ok) return { users: [] };
   return res.json();
 }
@@ -20,9 +20,11 @@ export default async function UsersPage() {
   const { users } = await getUsers();
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="p-8 max-w-6xl mx-auto bg-blue-100">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">User Directory {users.length}</h1>
+        <h1 className="text-3xl text-pink-400 font-bold">
+          User Directory {users.length}
+        </h1>
         <Link
           href="/register"
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
@@ -58,7 +60,7 @@ export default async function UsersPage() {
             </div>
 
             <Link
-              href={`/user/${user.id}`}
+              href={`/tracker/${user.id}`}
               className="block text-center w-full bg-blue-50 text-blue-700 py-2 rounded-lg font-semibold hover:bg-blue-100 transition"
             >
               View Tasks &rarr;
