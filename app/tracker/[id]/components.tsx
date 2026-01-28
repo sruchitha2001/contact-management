@@ -4,14 +4,35 @@ import {
   BriefcaseBusiness,
   Cake,
   CalendarCheck2,
+  Check,
   CircleUserRound,
   Globe,
   Pencil,
   Trash,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+
+// ✅ Icon wrapper (OPTION 1)
+function IconCircle({
+  children,
+  bg = "bg-indigo-100",
+  color = "text-indigo-600",
+}: {
+  children: React.ReactNode;
+  bg?: string;
+  color?: string;
+}) {
+  return (
+    <div
+      className={`w-12 h-12 rounded-full flex items-center justify-center ${bg} ${color}`}
+    >
+      {children}
+    </div>
+  );
+}
 
 interface Activity {
   id: number;
@@ -29,12 +50,14 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
   const [title, setTitle] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
   const [loggedDates, setLoggedDates] = useState<Date[]>([]);
+  const router = useRouter();
 
   const [stats, setStats] = useState({
     todayCount: 0,
     weekCount: 0,
     monthCount: 0,
     streak: 0,
+    todayActivity: [] as any,
   });
 
   const [mounted, setMounted] = useState(false);
@@ -142,6 +165,8 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
     loadStats();
   }
 
+  console.log(stats.todayActivity);
+
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-100 via-purple-100 to-pink-100 p-6">
       <div className="max-w-xl mx-auto bg-red-100 rounded-2xl shadow-xl p-6">
@@ -164,9 +189,15 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
         </div> */}
 
         <div className="rounded-2xl bg-amber-100 mb-2">
-          <div className="text-sm text-black rounded-t-lg bg-white flex flex-row my-1">
+          {/* Name */}
+          <div className="text-sm text-black rounded-t-lg bg-white flex items-center my-1">
             <div className="p-4">
-              <CircleUserRound />
+              <div
+                className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 
+                      flex items-center justify-center"
+              >
+                <CircleUserRound size={20} />
+              </div>
             </div>
             <div className="p-2">
               <div className="font-bold text-base">Name</div>
@@ -174,9 +205,15 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
             </div>
           </div>
 
-          <div className="text-sm text-black flex flex-row bg-white my-1">
+          {/* Age */}
+          <div className="text-sm text-black flex items-center bg-white my-1">
             <div className="p-4">
-              <Cake />
+              <div
+                className="w-12 h-12 rounded-full bg-pink-100 text-pink-600 
+                      flex items-center justify-center"
+              >
+                <Cake size={20} />
+              </div>
             </div>
             <div className="p-2">
               <div className="font-bold text-base">Age</div>
@@ -184,9 +221,15 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
             </div>
           </div>
 
-          <div className="text-sm text-black flex flex-row bg-white my-1">
+          {/* Occupation */}
+          <div className="text-sm text-black flex items-center bg-white my-1">
             <div className="p-4">
-              <BriefcaseBusiness />
+              <div
+                className="w-12 h-12 rounded-full bg-green-100 text-green-600 
+                      flex items-center justify-center"
+              >
+                <BriefcaseBusiness size={20} />
+              </div>
             </div>
             <div className="p-2">
               <div className="font-bold text-base">Occupation</div>
@@ -194,9 +237,15 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
             </div>
           </div>
 
-          <div className="text-sm text-black flex flex-row bg-white rounded-b-lg">
+          {/* Hobbies */}
+          <div className="text-sm text-black flex items-center bg-white rounded-b-lg">
             <div className="p-4">
-              <Globe />
+              <div
+                className="w-12 h-12 rounded-full bg-purple-100 text-purple-600 
+                      flex items-center justify-center"
+              >
+                <Globe size={20} />
+              </div>
             </div>
             <div className="p-2">
               <div className="font-bold text-base">Hobbies</div>
@@ -260,38 +309,53 @@ export default function TrackerPage({ params }: { params: { id: number } }) {
                 key={a.id}
                 className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg"
               >
-                <div>
-                  <p className="font-medium text-gray-800">
-                    {a.title},{a.id}
-                  </p>
+                <div
+                  onClick={() => router.push(`/activity/${a.id}`)}
+                  className="cursor-pointer"
+                >
+                  <p className="font-medium text-gray-800">{a.title}</p>
                   <p className="text-xs text-gray-400">
                     {new Date(a.createdAt).toLocaleString()}
                   </p>
                 </div>
 
                 <div className="flex gap-3 items-center">
+                  {/* Log */}
                   <button
                     onClick={() => logToday(a.id)}
-                    className="text-green-600 hover:underline"
+                    className="w-10 h-10 rounded-full bg-green-100 text-green-600 
+               flex items-center justify-center hover:bg-green-200"
                   >
-                    Log <CalendarCheck2 />
+                    {stats.todayActivity.some(
+                      (logged: any) => logged.activityId === a.id,
+                    ) ? (
+                      <Check size={18} />
+                    ) : (
+                      <CalendarCheck2 size={18} />
+                    )}
                   </button>
 
+                  {/* Edit */}
                   <button
+                    title="Edit activity"
                     onClick={() => {
                       setEditId(a.id);
                       setTitle(a.title);
                     }}
-                    className="text-indigo-600 hover:underline"
+                    className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 
+               flex items-center justify-center hover:bg-blue-200"
                   >
-                    <Pencil />
+                    <Pencil size={18} />
                   </button>
 
+                  {/* Delete */}
                   <button
+                    title="Delete activity"
                     onClick={() => deleteActivity(a.id)}
-                    className="text-red-500 hover:underline"
+                    className="w-10 h-10 rounded-full bg-red-100 text-red-600 
+               flex items-center justify-center hover:bg-red-200"
                   >
-                    <Trash />
+                    <Trash size={18} />
                   </button>
                 </div>
               </li>

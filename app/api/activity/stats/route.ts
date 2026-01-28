@@ -73,10 +73,19 @@ export async function GET(req: Request) {
     currentDate.setDate(currentDate.getDate() - 1);
   }
 
+  const todayActivity = await prisma.activityLogs.findMany({
+    where: {
+      userId: uid,
+      createdAt: { gte: todayStart },
+    },
+  });
+  console.log(todayActivity);
+
   return NextResponse.json({
     todayCount,
     weekCount,
     monthCount,
     streak,
+    todayActivity,
   });
 }
